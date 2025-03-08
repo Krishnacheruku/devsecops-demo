@@ -114,7 +114,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_PAT}}
 
-      - name: Build Docker Image
+      - name: Build and Push Docker Image
         run: |
           docker build -t ghcr.io/${{ github.repository }}/devsecops:${{ github.run_number }} .
 
@@ -129,3 +129,25 @@ jobs:
           format: 'table'
           exit-code: 1
           severity: 'CRITICAL,HIGH'
+
+  update-newtag-in-helm-chart:
+    needs: build-docker-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Update Image Tag in Helm Chart
+        run: |
+          sed -i "s|tag: .*|tag: \"${{ github.run_number }}\"|g" helm/devsecops-chart/values.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "jaychandra@gmail.com"
+          git config --global user.name "jaychandra17"
+          git add helm/devsecops-chart/values.yaml
+          git commit -m "Update tag in Helm chart"
+          git push
