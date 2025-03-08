@@ -2,13 +2,11 @@ name: CI-Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths-ignore:
       - 'kubernetes/deployment.yaml'
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   checkout-code:
