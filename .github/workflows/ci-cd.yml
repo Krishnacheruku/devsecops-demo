@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - 'kubernetes/deployment.yaml'
+      - 'helm/devsecops-chart/values.yaml'
   pull_request:
     branches: [ main ]
 
